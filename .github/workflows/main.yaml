@@ -34,7 +34,7 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
         AWS_REGION: 'ap-southeast-1'
-        SOURCE_DIR: .github/badges/jacoco.svg
+        SOURCE_DIR: \.github\badges\jacoco.svg
         DEST_DIR: coverage/${{ github.event.repository.name }} 
     - name: Upload coverage report
       uses: jakejarvis/s3-sync-action@master
