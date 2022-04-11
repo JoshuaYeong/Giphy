@@ -1,0 +1,48 @@
+name: Compile, test, deploy
+on: [ "push" ]
+env:
+  GIPHY_API_KEY: ${{ secrets.giphy_api_key }}
+jobs: 
+  step1:
+    runs-on: ubuntu-latest
+    steps: 
+    - name: Checkout my repo
+      uses: actions/checkout@v3
+    - name: Setup Java 17
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+    -name: Setup Maven
+      uses: stCarolas/setup-maven@v4.3
+      with:
+        maven-version: '3.8.4'
+    -name: Run test
+      run: mvn clean verify
+    - name: Generate coverage badge
+      uses: cicirello/jacoco-badge-generator@v2
+      with:
+        generate-branches-badge: true
+        generate-coverage-badge: true
+        jacoco-csv-file: /target/site/jacoco/jacoco.csv
+
+    - name: Upload coverage badge to AWS S3 Bucket
+      uses: jakejarvis/s3-sync-action@master
+      with:
+        args: --acl public-read --follow-symlinks --delete
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+        AWS_REGION: 'ap-southeast-1'
+        SOURCE_DIR: .github/badges/jacoco.svg
+        DEST_DIR: coverage/${{ github.event.repository.name }} 
+    - name: Upload coverage report
+      uses: jakejarvis/s3-sync-action@master
+      with:
+        args: --acl public-read --follow-symlinks --delete
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+        AWS_REGION: 'ap-southeast-1'
+        SOURCE_DIR: /target/site/jacoco
+        DEST_DIR: coverage/${{ github.event.repository.name }}/report
