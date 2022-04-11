@@ -13,11 +13,11 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '17'
-    -name: Setup Maven
+    - name: Setup Maven
       uses: stCarolas/setup-maven@v4.3
       with:
-        maven-version: '3.8.4'
-    -name: Run test
+        maven-version: 3.8.4
+    - name: Run test
       run: mvn clean verify
     - name: Generate coverage badge
       uses: cicirello/jacoco-badge-generator@v2
