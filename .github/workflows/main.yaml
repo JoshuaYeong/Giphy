@@ -22,9 +22,7 @@ jobs:
     - name: Generate coverage badge
       uses: cicirello/jacoco-badge-generator@v2
       with:
-        generate-branches-badge: true
         generate-coverage-badge: true
-
     - name: Upload coverage badge to AWS S3 Bucket
       uses: jakejarvis/s3-sync-action@master
       with:
