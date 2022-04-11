@@ -24,7 +24,6 @@ jobs:
       with:
         generate-branches-badge: true
         generate-coverage-badge: true
-        jacoco-csv-file: /target/site/jacoco/jacoco.csv
 
     - name: Upload coverage badge to AWS S3 Bucket
       uses: jakejarvis/s3-sync-action@master
